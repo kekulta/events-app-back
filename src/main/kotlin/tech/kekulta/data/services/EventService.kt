@@ -13,6 +13,8 @@ import tech.kekulta.data.db.dao.UserDao
 import tech.kekulta.data.db.sheme.EventVisitorsTable
 import tech.kekulta.domain.models.events.Event
 import tech.kekulta.domain.models.events.EventId
+import tech.kekulta.domain.models.events.EventInfo
+import tech.kekulta.domain.models.users.Avatar
 import tech.kekulta.domain.models.users.UserId
 
 class EventService(private val database: Database) {
@@ -60,14 +62,28 @@ class EventService(private val database: Database) {
         }
     }
 
-    suspend fun createEvent(owner: UserId, name: String): Event? = dbQuery {
+    suspend fun createEvent(owner: UserId, info: EventInfo): Event? = dbQuery {
         try {
             UserDao.findById(owner.id)?.let { user ->
                 EventDao.new {
                     this.owner = user.id
-                    this.name = name
+                    this.name = info.name
+                    this.avatar = info.avatar.url
+                    this.description = info.description
                 }.toModel()
             }
+        } catch (e: ExposedSQLException) {
+            null
+        }
+    }
+
+    suspend fun updateEvent(id: EventId, info: EventInfo): Event? = dbQuery {
+        try {
+            EventDao.findById(id.id)?.apply {
+                this.name = info.name
+                this.avatar = info.avatar.url
+                this.description = info.description
+            }?.toModel()
         } catch (e: ExposedSQLException) {
             null
         }
@@ -83,9 +99,11 @@ class EventService(private val database: Database) {
 
     private fun EventDao.toModel() = Event(
         id = EventId(id.value),
-        name = name,
         owner = owner?.let { UserId(it.value) },
         visitors = visitors.map { dao -> UserId(dao.id.value) },
+        info = EventInfo(
+            name = name, description = description, avatar = Avatar(avatar),
+        )
     )
 
     private suspend fun <T> dbQuery(block: suspend () -> T): T = newSuspendedTransaction(

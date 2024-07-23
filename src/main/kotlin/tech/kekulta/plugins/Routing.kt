@@ -9,6 +9,7 @@ import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.koin.ktor.ext.inject
 import tech.kekulta.domain.models.events.EventId
+import tech.kekulta.domain.models.events.EventInfo
 import tech.kekulta.domain.models.users.*
 import tech.kekulta.domain.repositories.EventRepository
 import tech.kekulta.domain.repositories.RegistrationDataRepository
@@ -247,11 +248,11 @@ fun Application.configureRouting() {
 
             // Create event
             post("/events/create") {
-                val name = call.parameters["name"]
                 val principal = call.extractIdPrincipal()
+                val info = call.receive<EventInfo>()
 
-                if (principal != null && name != null) {
-                    val event = eventRepository.createEvent(principal, name)
+                if (principal != null) {
+                    val event = eventRepository.createEvent(principal, info)
 
                     if (event != null) {
                         call.respond(HttpStatusCode.OK, event)
@@ -260,6 +261,22 @@ fun Application.configureRouting() {
                     }
                 } else {
                     call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+
+            // Update event
+            put("/events/{id}") {
+                val eventId = call.extractEventId()
+                val principal = call.extractIdPrincipal()
+                val info = call.receive<EventInfo>()
+                val event = eventId?.let { eventRepository.getEvent(eventId) }
+
+                if (principal != null && event?.owner != null && event.owner == principal) {
+                    val updatedEvent = eventRepository.updateEvent(eventId, info)
+
+                    call.responseOrNotFound(updatedEvent)
+                } else {
+                    call.respond(HttpStatusCode.Forbidden, "You can change only events you own.")
                 }
             }
 

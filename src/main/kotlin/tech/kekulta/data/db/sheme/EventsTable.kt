@@ -6,6 +6,8 @@ import tech.kekulta.domain.Constants
 
 object EventsTable : IntIdTable("events") {
     val name = varchar("name", Constants.EVENT_NAME_LEN)
+    val avatar = varchar("avatar", Constants.AVATAR_LEN).nullable()
+    val description = varchar("description", Constants.EVENT_DESCRIPTION_LEN).nullable()
     val owner = reference(
         "user_id", UsersTable,
         onDelete = ReferenceOption.SET_NULL,

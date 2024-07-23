@@ -3,6 +3,7 @@ package tech.kekulta.data.repositories
 import tech.kekulta.data.services.EventService
 import tech.kekulta.domain.models.events.Event
 import tech.kekulta.domain.models.events.EventId
+import tech.kekulta.domain.models.events.EventInfo
 import tech.kekulta.domain.models.users.UserId
 import tech.kekulta.domain.repositories.EventRepository
 
@@ -15,7 +16,9 @@ class EventRepositoryImpl(
 
     override suspend fun getEvents(ids: List<EventId>): List<Event> = eventService.getEvents(ids)
 
-    override suspend fun createEvent(owner: UserId, name: String): Event? = eventService.createEvent(owner, name)
+    override suspend fun createEvent(owner: UserId, info: EventInfo): Event? = eventService.createEvent(owner, info)
+
+    override suspend fun updateEvent(id: EventId, info: EventInfo): Event? = eventService.updateEvent(id, info)
 
     override suspend fun deleteEvent(id: EventId): Boolean = eventService.deleteEvent(id)
 

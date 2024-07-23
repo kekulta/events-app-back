@@ -7,4 +7,5 @@ object Constants {
     const val TOKEN_LEN = 128
     const val AVATAR_LEN = 255
     const val EVENT_NAME_LEN = 255
+    const val EVENT_DESCRIPTION_LEN = 1024
 }

@@ -6,8 +6,8 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import tech.kekulta.data.db.dao.RegisterTokenDao
 import tech.kekulta.data.db.sheme.RegisterTokensTable
 import tech.kekulta.data.services.RegistrationService
-import tech.kekulta.domain.models.RegisterToken
-import tech.kekulta.domain.models.UserId
+import tech.kekulta.domain.models.users.RegisterToken
+import tech.kekulta.domain.models.users.UserId
 import tech.kekulta.domain.repositories.RegisterTokenRepository
 
 class RegisterTokenRepositoryImpl(

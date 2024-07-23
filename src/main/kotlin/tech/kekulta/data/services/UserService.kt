@@ -7,7 +7,7 @@ import tech.kekulta.data.db.dao.ProfileDao
 import tech.kekulta.data.db.dao.UserDao
 import tech.kekulta.data.db.sheme.UsersTable
 import tech.kekulta.data.db.upsert
-import tech.kekulta.domain.models.*
+import tech.kekulta.domain.models.users.*
 
 class UserService(private val database: Database) {
     suspend fun updateProfile(id: UserId, info: ProfileInfo): Profile? = dbQuery {

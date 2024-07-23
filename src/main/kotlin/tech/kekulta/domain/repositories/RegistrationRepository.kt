@@ -1,6 +1,6 @@
 package tech.kekulta.domain.repositories
 
-import tech.kekulta.domain.models.*
+import tech.kekulta.domain.models.users.*
 
 interface RegistrationRepository {
     suspend fun getRegistrationStatus(id: UserId): RegistrationStatus?

@@ -4,9 +4,9 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.routing.*
 import org.koin.ktor.ext.inject
-import tech.kekulta.domain.models.AccessToken
-import tech.kekulta.domain.models.RegisterToken
-import tech.kekulta.domain.models.UserId
+import tech.kekulta.domain.models.users.AccessToken
+import tech.kekulta.domain.models.users.RegisterToken
+import tech.kekulta.domain.models.users.UserId
 import tech.kekulta.domain.repositories.AccessTokenRepository
 import tech.kekulta.domain.repositories.RegisterTokenRepository
 

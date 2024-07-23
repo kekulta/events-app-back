@@ -1,6 +1,6 @@
 package tech.kekulta.domain.repositories
 
-import tech.kekulta.domain.models.*
+import tech.kekulta.domain.models.users.*
 
 interface UserRepository {
     suspend fun updateProfile(id: UserId, info: ProfileInfo): Profile?

@@ -8,13 +8,16 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import kotlinx.serialization.Serializable
 import org.koin.ktor.ext.inject
-import tech.kekulta.domain.models.*
+import tech.kekulta.domain.models.events.EventId
+import tech.kekulta.domain.models.users.*
+import tech.kekulta.domain.repositories.EventRepository
 import tech.kekulta.domain.repositories.RegistrationDataRepository
 import tech.kekulta.domain.repositories.RegistrationRepository
 import tech.kekulta.domain.repositories.UserRepository
 
 private fun ApplicationCall.extractIdPrincipal() = principal<EventsUserIdPrincipal>()?.userId
-private fun ApplicationCall.extractId(name: String = "id") = parameters[name]?.toIntOrNull()?.let { UserId(it) }
+private fun ApplicationCall.extractUserId(name: String = "id") = parameters[name]?.toIntOrNull()?.let { UserId(it) }
+private fun ApplicationCall.extractEventId(name: String = "id") = parameters[name]?.toIntOrNull()?.let { EventId(it) }
 
 private suspend fun ApplicationCall.responseOrNotFound(body: Any?) {
     if (body != null) {
@@ -48,6 +51,7 @@ fun Application.configureRouting() {
     val userRepository by inject<UserRepository>()
     val registrationRepository by inject<RegistrationRepository>()
     val registrationDataRepository by inject<RegistrationDataRepository>()
+    val eventRepository by inject<EventRepository>()
 
     routing {
         get("/") {
@@ -73,6 +77,10 @@ fun Application.configureRouting() {
 
             get("/admin/profiles") {
                 call.respond(HttpStatusCode.OK, userRepository.getAllProfiles())
+            }
+
+            get("/admin/events") {
+                call.respond(HttpStatusCode.OK, eventRepository.getAllEvents())
             }
         }
 
@@ -152,7 +160,7 @@ fun Application.configureRouting() {
             }
         }
 
-        authenticate(Security.REGISTER) {
+        authenticateRegister {
             post("/register/finish") {
                 val id = call.extractIdPrincipal()
                 val info = call.receive<ProfileInfo>()
@@ -166,7 +174,7 @@ fun Application.configureRouting() {
             }
         }
 
-        authenticate(Security.AUTH) {
+        authenticateUser {
             get("/protected") {
                 call.principal<UserIdPrincipal>()
                 call.respondText(
@@ -184,7 +192,7 @@ fun Application.configureRouting() {
 
             // Read user
             get("/users/{id}") {
-                val id = call.extractId()
+                val id = call.extractUserId()
                 val profile = id?.let { userRepository.getProfile(id) }
 
                 call.responseOrNotFound(profile?.toDto())
@@ -192,7 +200,7 @@ fun Application.configureRouting() {
 
             // Update user
             put("/users/{id}") {
-                val id = call.extractId()
+                val id = call.extractUserId()
                 val principal = call.extractIdPrincipal()
                 val info = call.receive<ProfileInfo>()
 
@@ -208,7 +216,7 @@ fun Application.configureRouting() {
 
             // Delete user
             delete("/users/{id}") {
-                val id = call.extractId()
+                val id = call.extractUserId()
                 val principal = call.extractIdPrincipal()
 
                 if (principal != null && id != null && id == principal) {
@@ -217,6 +225,56 @@ fun Application.configureRouting() {
                     call.okOrNotFound(isSuccess)
                 } else {
                     call.respond(HttpStatusCode.Forbidden, "You can't delete another user.")
+                }
+            }
+
+
+            // Get List of events
+            get("/events") {
+                val ids = call.receive<List<EventId>>()
+                val events = eventRepository.getEvents(ids)
+
+                call.respond(HttpStatusCode.OK, events)
+            }
+
+            // Read event
+            get("/events/{id}") {
+                val id = call.extractEventId()
+                val event = id?.let { eventRepository.getEvent(id) }
+
+                call.responseOrNotFound(event)
+            }
+
+            // Create event
+            post("/events/create") {
+                val name = call.parameters["name"]
+                val principal = call.extractIdPrincipal()
+
+                if (principal != null && name != null) {
+                    val event = eventRepository.createEvent(principal, name)
+
+                    if (event != null) {
+                        call.respond(HttpStatusCode.OK, event)
+                    } else {
+                        call.respond(HttpStatusCode.BadRequest)
+                    }
+                } else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+
+            // Delete event
+            delete("/events/{id}") {
+                val eventId = call.extractEventId()
+                val principal = call.extractIdPrincipal()
+                val event = eventId?.let { eventRepository.getEvent(eventId) }
+
+                if (principal != null && event?.owner != null && event.owner == principal) {
+                    val isSuccess = eventRepository.deleteEvent(eventId)
+
+                    call.okOrNotFound(isSuccess)
+                } else {
+                    call.respond(HttpStatusCode.Forbidden, "You can delete only events you own.")
                 }
             }
         }

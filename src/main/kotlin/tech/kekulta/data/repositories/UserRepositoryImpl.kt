@@ -1,7 +1,7 @@
 package tech.kekulta.data.repositories
 
 import tech.kekulta.data.services.UserService
-import tech.kekulta.domain.models.*
+import tech.kekulta.domain.models.users.*
 import tech.kekulta.domain.repositories.UserRepository
 
 class UserRepositoryImpl(private val userService: UserService) : UserRepository {

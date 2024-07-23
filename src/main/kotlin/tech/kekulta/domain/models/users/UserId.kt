@@ -1,4 +1,4 @@
-package tech.kekulta.domain.models
+package tech.kekulta.domain.models.users
 
 import kotlinx.serialization.Serializable
 

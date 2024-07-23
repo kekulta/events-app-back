@@ -1,7 +1,7 @@
 package tech.kekulta.data.repositories
 
 import tech.kekulta.data.services.RegistrationService
-import tech.kekulta.domain.models.*
+import tech.kekulta.domain.models.users.*
 import tech.kekulta.domain.repositories.RegistrationDataRepository
 
 class RegistrationDataRepositoryImpl(private val registrationService: RegistrationService) :

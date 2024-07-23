@@ -5,7 +5,14 @@ import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.transaction
 import tech.kekulta.data.db.sheme.*
 
-val AllTables = listOf(AccessTokensTable, ProfilesTable, UsersTable, RegisterTokensTable, VerificationCodesTable)
+val AllTables = listOf(
+    AccessTokensTable,
+    ProfilesTable,
+    UsersTable,
+    RegisterTokensTable,
+    VerificationCodesTable,
+    EventsTable,
+)
 
 fun createDatabase(): Database {
     val database = Database.connect(

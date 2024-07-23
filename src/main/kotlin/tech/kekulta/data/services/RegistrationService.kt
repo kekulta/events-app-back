@@ -9,7 +9,7 @@ import tech.kekulta.data.db.sheme.RegisterTokensTable
 import tech.kekulta.data.db.sheme.UsersTable
 import tech.kekulta.data.db.upsert
 import tech.kekulta.domain.Constants
-import tech.kekulta.domain.models.*
+import tech.kekulta.domain.models.users.*
 
 class RegistrationService(
     private val database: Database, private val userService: UserService,

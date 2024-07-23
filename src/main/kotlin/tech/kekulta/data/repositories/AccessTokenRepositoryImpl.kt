@@ -6,8 +6,8 @@ import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransacti
 import tech.kekulta.data.db.dao.AccessTokenDao
 import tech.kekulta.data.db.sheme.AccessTokensTable
 import tech.kekulta.data.services.RegistrationService
-import tech.kekulta.domain.models.AccessToken
-import tech.kekulta.domain.models.UserId
+import tech.kekulta.domain.models.users.AccessToken
+import tech.kekulta.domain.models.users.UserId
 import tech.kekulta.domain.repositories.AccessTokenRepository
 
 class AccessTokenRepositoryImpl(

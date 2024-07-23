@@ -14,8 +14,8 @@ import org.koin.test.KoinTest
 import org.koin.test.get
 import tech.kekulta.data.db.sheme.*
 import tech.kekulta.data.di.dataModule
-import tech.kekulta.domain.models.PhoneNumber
-import tech.kekulta.domain.models.RegistrationStatus
+import tech.kekulta.domain.models.users.PhoneNumber
+import tech.kekulta.domain.models.users.RegistrationStatus
 import tech.kekulta.domain.repositories.RegistrationDataRepository
 import tech.kekulta.domain.repositories.RegistrationRepository
 import kotlin.test.Test

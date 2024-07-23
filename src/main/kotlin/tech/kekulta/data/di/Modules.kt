@@ -5,6 +5,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import tech.kekulta.data.db.createDatabase
 import tech.kekulta.data.repositories.*
+import tech.kekulta.data.services.CommunityService
 import tech.kekulta.data.services.EventService
 import tech.kekulta.data.services.UserService
 import tech.kekulta.data.services.RegistrationService
@@ -16,10 +17,12 @@ val dataModule = module {
     singleOf(::UserService)
     singleOf(::RegistrationService)
     singleOf(::EventService)
+    singleOf(::CommunityService)
     singleOf(::UserRepositoryImpl) bind UserRepository::class
     singleOf(::RegistrationRepositoryImpl) bind RegistrationRepository::class
     singleOf(::RegistrationDataRepositoryImpl) bind RegistrationDataRepository::class
     singleOf(::RegisterTokenRepositoryImpl) bind RegisterTokenRepository::class
     singleOf(::AccessTokenRepositoryImpl) bind AccessTokenRepository::class
     singleOf(::EventRepositoryImpl) bind EventRepository::class
+    singleOf(::CommunityRepositoryImpl) bind CommunityRepository::class
 }

@@ -5,4 +5,10 @@ import tech.kekulta.domain.models.events.EventId
 import tech.kekulta.domain.models.users.UserId
 
 @Serializable
-data class Community(val id: CommunityId, val members: List<UserId>, val events: List<EventId>)
+data class Community(
+    val id: CommunityId,
+    val owner: UserId?,
+    val members: List<UserId>,
+    val events: List<EventId>,
+    val info: CommunityInfo,
+)

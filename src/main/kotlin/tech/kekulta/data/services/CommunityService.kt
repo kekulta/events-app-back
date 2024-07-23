@@ -9,37 +9,24 @@ import org.jetbrains.exposed.sql.deleteWhere
 import org.jetbrains.exposed.sql.insert
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import tech.kekulta.data.db.dao.CommunityDao
-import tech.kekulta.data.db.dao.EventDao
 import tech.kekulta.data.db.dao.UserDao
-import tech.kekulta.data.db.sheme.EventVisitorsTable
+import tech.kekulta.data.db.sheme.CommunityMembersTable
+import tech.kekulta.domain.models.communities.Community
 import tech.kekulta.domain.models.communities.CommunityId
-import tech.kekulta.domain.models.events.Event
+import tech.kekulta.domain.models.communities.CommunityInfo
 import tech.kekulta.domain.models.events.EventId
-import tech.kekulta.domain.models.events.EventInfo
 import tech.kekulta.domain.models.users.Avatar
 import tech.kekulta.domain.models.users.UserId
 
-class EventService(private val database: Database) {
+class CommunityService(private val database: Database) {
 
-    suspend fun updateCommunity(eventId: EventId, communityId: CommunityId): Event? = dbQuery {
-        try {
-            CommunityDao.findById(communityId.id)?.let { community ->
-                EventDao.findById(eventId.id)?.apply {
-                    this.community = community.id
-                }?.toModel()
-            }
-        } catch (e: ExposedSQLException) {
-            null
-        }
-    }
-
-    suspend fun addVisitor(eventId: EventId, userId: UserId): Boolean = dbQuery {
+    suspend fun addMember(communityId: CommunityId, userId: UserId): Boolean = dbQuery {
         try {
             UserDao.findById(userId.id)?.let { user ->
-                EventDao.findById(eventId.id)?.let { event ->
-                    EventVisitorsTable.insert {
+                CommunityDao.findById(communityId.id)?.let { community ->
+                    CommunityMembersTable.insert {
                         it[this.user] = user.id
-                        it[this.event] = event.id
+                        it[this.community] = community.id
                     }.resultedValues?.size
                 }
             } != null
@@ -48,12 +35,12 @@ class EventService(private val database: Database) {
         }
     }
 
-    suspend fun deleteVisitor(eventId: EventId, userId: UserId): Boolean = dbQuery {
+    suspend fun deleteMember(communityId: CommunityId, userId: UserId): Boolean = dbQuery {
         try {
             UserDao.findById(userId.id)?.let { user ->
-                EventDao.findById(eventId.id)?.let { event ->
-                    EventVisitorsTable.deleteWhere {
-                        (EventVisitorsTable.user eq user.id) and (EventVisitorsTable.event eq event.id)
+                CommunityDao.findById(communityId.id)?.let { community ->
+                    CommunityMembersTable.deleteWhere {
+                        (CommunityMembersTable.user eq user.id) and (CommunityMembersTable.community eq community.id)
                     }
                 }
             }?.let { it > 0 } ?: false
@@ -62,31 +49,28 @@ class EventService(private val database: Database) {
         }
     }
 
-    suspend fun getAllEvents(): List<Event> = dbQuery {
-        EventDao.all().map { it.toModel() }
+    suspend fun getAllCommunities(): List<Community> = dbQuery {
+        CommunityDao.all().map { it.toModel() }
     }
 
-    suspend fun getEvent(id: EventId): Event? = dbQuery {
-        EventDao.findById(id.id)?.toModel()
+    suspend fun getCommunity(id: CommunityId): Community? = dbQuery {
+        CommunityDao.findById(id.id)?.toModel()
     }
 
-    suspend fun getEvents(ids: List<EventId>): List<Event> = dbQuery {
+    suspend fun getCommunities(ids: List<CommunityId>): List<Community> = dbQuery {
         ids.mapNotNull { id ->
-            EventDao.findById(id.id)?.toModel()
+            CommunityDao.findById(id.id)?.toModel()
         }
     }
 
-    suspend fun createEvent(owner: UserId, community: CommunityId?, info: EventInfo): Event? = dbQuery {
+    suspend fun createCommunity(owner: UserId, info: CommunityInfo): Community? = dbQuery {
         try {
             UserDao.findById(owner.id)?.let { user ->
-                val communityId = community?.let { CommunityDao.findById(community.id)?.id }
-
-                EventDao.new {
+                CommunityDao.new {
                     this.owner = user.id
                     this.name = info.name
                     this.avatar = info.avatar.url
                     this.description = info.description
-                    this.community = communityId
                 }.toModel()
             }
         } catch (e: ExposedSQLException) {
@@ -94,9 +78,9 @@ class EventService(private val database: Database) {
         }
     }
 
-    suspend fun updateEvent(id: EventId, info: EventInfo): Event? = dbQuery {
+    suspend fun updateCommunity(id: CommunityId, info: CommunityInfo): Community? = dbQuery {
         try {
-            EventDao.findById(id.id)?.apply {
+            CommunityDao.findById(id.id)?.apply {
                 this.name = info.name
                 this.avatar = info.avatar.url
                 this.description = info.description
@@ -106,20 +90,20 @@ class EventService(private val database: Database) {
         }
     }
 
-    suspend fun deleteEvent(id: EventId): Boolean = dbQuery {
+    suspend fun deleteCommunity(id: CommunityId): Boolean = dbQuery {
         try {
-            EventDao.findById(id.id)?.delete() != null
+            CommunityDao.findById(id.id)?.delete() != null
         } catch (e: ExposedSQLException) {
             false
         }
     }
 
-    private fun EventDao.toModel() = Event(
-        id = EventId(id.value),
+    private fun CommunityDao.toModel() = Community(
+        id = CommunityId(id.value),
         owner = owner?.let { UserId(it.value) },
-        community = community?.let { CommunityId(it.value) },
-        visitors = visitors.map { dao -> UserId(dao.id.value) },
-        info = EventInfo(
+        members = members.map { dao -> UserId(dao.id.value) },
+        events = events.map { dao -> EventId(dao.id.value) },
+        info = CommunityInfo(
             name = name, description = description, avatar = Avatar(avatar),
         )
     )

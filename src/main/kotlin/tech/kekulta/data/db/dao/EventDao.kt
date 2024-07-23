@@ -11,7 +11,8 @@ class EventDao(id: EntityID<Int>) : IntEntity(id) {
 
     var name by EventsTable.name
     var owner by EventsTable.owner
+    var community by EventsTable.community
     var description by EventsTable.description
     var avatar by EventsTable.avatar
-    var visitors by UserDao via EventVisitorsTable
+    val visitors by UserDao via EventVisitorsTable
 }

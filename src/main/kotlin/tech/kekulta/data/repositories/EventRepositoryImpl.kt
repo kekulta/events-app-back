@@ -1,6 +1,7 @@
 package tech.kekulta.data.repositories
 
 import tech.kekulta.data.services.EventService
+import tech.kekulta.domain.models.communities.CommunityId
 import tech.kekulta.domain.models.events.Event
 import tech.kekulta.domain.models.events.EventId
 import tech.kekulta.domain.models.events.EventInfo
@@ -16,9 +17,13 @@ class EventRepositoryImpl(
 
     override suspend fun getEvents(ids: List<EventId>): List<Event> = eventService.getEvents(ids)
 
-    override suspend fun createEvent(owner: UserId, info: EventInfo): Event? = eventService.createEvent(owner, info)
+    override suspend fun createEvent(owner: UserId, community: CommunityId?, info: EventInfo): Event? =
+        eventService.createEvent(owner, community, info)
 
     override suspend fun updateEvent(id: EventId, info: EventInfo): Event? = eventService.updateEvent(id, info)
+
+    override suspend fun updateCommunity(eventId: EventId, communityId: CommunityId): Event? =
+        eventService.updateCommunity(eventId, communityId)
 
     override suspend fun deleteEvent(id: EventId): Boolean = eventService.deleteEvent(id)
 

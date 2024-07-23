@@ -13,6 +13,8 @@ val AllTables = listOf(
     VerificationCodesTable,
     EventsTable,
     EventVisitorsTable,
+    CommunitiesTable,
+    CommunityMembersTable,
 )
 
 fun createDatabase(): Database {

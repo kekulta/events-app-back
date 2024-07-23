@@ -1,7 +1,7 @@
 {
     "_type": "export",
     "__export_format": 4,
-    "__export_date": "2024-07-23T13:27:46.029Z",
+    "__export_date": "2024-07-23T15:36:39.474Z",
     "__export_source": "insomnia.desktop.app:v9.3.2",
     "resources": [
         {
@@ -1575,11 +1575,17 @@
         {
             "_id": "env_99d30891da4bdcebc63947a8fc17f076de878684",
             "parentId": "wrk_scratchpad",
-            "modified": 1721741209382,
+            "modified": 1721748933571,
             "created": 1721582728743,
             "name": "Base Environment",
-            "data": {},
-            "dataPropertyOrder": {},
+            "data": {
+                "admin_token": ""
+            },
+            "dataPropertyOrder": {
+                "&": [
+                    "admin_token"
+                ]
+            },
             "color": null,
             "isPrivate": false,
             "metaSortKey": 1721582728743,
@@ -1588,7 +1594,7 @@
         {
             "_id": "jar_99d30891da4bdcebc63947a8fc17f076de878684",
             "parentId": "wrk_scratchpad",
-            "modified": 1721741209380,
+            "modified": 1721743403843,
             "created": 1721582728758,
             "name": "Default Jar",
             "cookies": [],
@@ -1597,7 +1603,7 @@
         {
             "_id": "env_9860a4df62bf4af0a95db29dd06f5851",
             "parentId": "env_99d30891da4bdcebc63947a8fc17f076de878684",
-            "modified": 1721741209381,
+            "modified": 1721748909344,
             "created": 1721582833766,
             "name": "Events Local",
             "data": {
@@ -1605,7 +1611,6 @@
                 "host": "localhost:8080",
                 "admin": "admin",
                 "token": "auth-token",
-                "admin_token": "admin-token",
                 "verification_code": "2896",
                 "register_token": "xvL9NJ5CMsHvAl09XD2HLKtjhKZ2Rw5rQvXvZ4ScgxeStAY2HepHuW6BjlKaS8PAJkCmgSsg5Akh6CY5vhXQjbPGctewgh2hxwOEHJHpwBJaVzrNrWtyaQHltPBYh9Ux",
                 "access_token": "qvcsneTtI8Ho8lOjl9qtJTnkqo8KZgDzjMz1YwsX43WN67Hie1eJAXs3HkcpsElYQ95uUGf2TiBCCyEzrDWpw0B3MKrKjsx369cGgH30HGP7EQxxswZ5Kh9cVy5quXpI",
@@ -1617,7 +1622,6 @@
                     "host",
                     "admin",
                     "token",
-                    "admin_token",
                     "verification_code",
                     "register_token",
                     "access_token",
@@ -1627,6 +1631,37 @@
             "color": null,
             "isPrivate": false,
             "metaSortKey": 1721582833766,
+            "_type": "environment"
+        },
+        {
+            "_id": "env_29d34eeb1de74da0ad02794ce62d9ac0",
+            "parentId": "env_99d30891da4bdcebc63947a8fc17f076de878684",
+            "modified": 1721748896701,
+            "created": 1721743314074,
+            "name": "Events Remote",
+            "data": {
+                "scheme": "https",
+                "host": "kekulta.tech",
+                "admin": "admin",
+                "verification_code": "6507",
+                "register_token": "M5VID4V2kXlNQno2yMliXWg43kCRHTgeSHBaxwnQAOVbdnWmEzrkpI55PTsoXjV6C6FCunjeEIK4u4glWMF4txXJrjZdkev62iSUqmXlq2u7G0AIbvDhbrozZP1iTJy2",
+                "access_token": "cuDAM4Bjk2ib3pB0VWOGnOJXuNkQjSHPVKYJa8LCIozqYfWwmION8e6qRH50RzTND3K6iAv17waXkyuoZlnbxAEIKPnkxAiaeVuPBVV3d3uWz4qyYW66WEozxTFuzhH1",
+                "number": "27"
+            },
+            "dataPropertyOrder": {
+                "&": [
+                    "scheme",
+                    "host",
+                    "admin",
+                    "verification_code",
+                    "register_token",
+                    "access_token",
+                    "number"
+                ]
+            },
+            "color": null,
+            "isPrivate": false,
+            "metaSortKey": 1721582833816,
             "_type": "environment"
         }
     ]

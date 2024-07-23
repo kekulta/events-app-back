@@ -1,0 +1,28 @@
+version: '3.6'
+services:
+  lb:
+    volumes:
+      - /etc/letsencrypt/ssl/fullchain.pem:/etc/nginx/ssl/fullchain.pem
+      - /etc/letsencrypt/ssl/privkey.pem:/etc/nginx/ssl/privkey.pem
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      #      - "80:9090"
+      - "443:9091"
+    depends_on:
+      - service1
+  #        - service2
+  service1:
+    environment:
+      - ADMIN_TOKEN=${ADMIN_TOKEN}
+    build:
+      context: .
+    ports:
+      - "8181:8080"
+#  service2:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8282:8080"

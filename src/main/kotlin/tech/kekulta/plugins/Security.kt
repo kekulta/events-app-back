@@ -10,7 +10,7 @@ import tech.kekulta.domain.models.users.UserId
 import tech.kekulta.domain.repositories.AccessTokenRepository
 import tech.kekulta.domain.repositories.RegisterTokenRepository
 
-const val ADMIN_TOKEN = "admin-token"
+val AdminToken: String? = System.getenv("ADMIN_TOKEN")
 
 data class EventsUserIdPrincipal(val userId: UserId) : Principal
 
@@ -47,10 +47,8 @@ fun Application.configureSecurity() {
             realm = "Access to restricted APIs mainly for testing"
 
             authenticate { tokenCredential ->
-                if (tokenCredential.token == ADMIN_TOKEN) {
-                    EventsUserIdPrincipal(UserId(0))
-                } else {
-                    null
+                AdminToken?.let { adminToken ->
+                    EventsUserIdPrincipal(UserId(0)).takeIf { tokenCredential.token == adminToken }
                 }
             }
         }

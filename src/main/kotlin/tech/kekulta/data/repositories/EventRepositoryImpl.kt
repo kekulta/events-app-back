@@ -18,4 +18,10 @@ class EventRepositoryImpl(
     override suspend fun createEvent(owner: UserId, name: String): Event? = eventService.createEvent(owner, name)
 
     override suspend fun deleteEvent(id: EventId): Boolean = eventService.deleteEvent(id)
+
+    override suspend fun addVisitor(eventId: EventId, userId: UserId): Boolean =
+        eventService.addVisitor(eventId, userId)
+
+    override suspend fun deleteVisitor(eventId: EventId, userId: UserId): Boolean =
+        eventService.deleteVisitor(eventId, userId)
 }

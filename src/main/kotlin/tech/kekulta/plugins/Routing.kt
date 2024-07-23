@@ -277,6 +277,54 @@ fun Application.configureRouting() {
                     call.respond(HttpStatusCode.Forbidden, "You can delete only events you own.")
                 }
             }
+
+            // Register to event
+            post("/events/register/{id}") {
+                val eventId = call.extractEventId()
+                val principal = call.extractIdPrincipal()
+                val event = eventId?.let { eventRepository.getEvent(eventId) }
+
+                if (principal != null && event != null) {
+                    val isSuccess = eventRepository.addVisitor(eventId, principal)
+
+                    call.okOrNotFound(isSuccess)
+                } else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+
+
+            // Cancel registration
+            post("/events/cancel/{id}") {
+                val eventId = call.extractEventId()
+                val principal = call.extractIdPrincipal()
+                val event = eventId?.let { eventRepository.getEvent(eventId) }
+
+                if (principal != null && event != null) {
+                    val isSuccess = eventRepository.deleteVisitor(eventId, principal)
+
+                    call.okOrNotFound(isSuccess)
+                } else {
+                    call.respond(HttpStatusCode.BadRequest)
+                }
+            }
+
+
+            // Kick user from event
+            post("/events/kick/{id}") {
+                val eventId = call.extractEventId()
+                val principal = call.extractIdPrincipal()
+                val userToKick = call.extractUserId()
+                val event = eventId?.let { eventRepository.getEvent(eventId) }
+
+                if (userToKick != null && principal != null && event?.owner != null && event.owner == principal) {
+                    val isSuccess = eventRepository.deleteVisitor(eventId, userToKick)
+
+                    call.okOrNotFound(isSuccess)
+                } else {
+                    call.respond(HttpStatusCode.Forbidden)
+                }
+            }
         }
     }
 }
